@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_ease/shared/constant/icons/constant_icons.dart';
 
 class AppLayout extends StatefulWidget {
   const AppLayout({super.key});
@@ -28,11 +29,11 @@ class AppLayoutState extends State<AppLayout> {
         onTap: (index) => setState(() => _currentIndex = index),
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.notes_outlined), label: "Notes"),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Note"),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications_outlined), label: "Notifications"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(ConstantIcons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(ConstantIcons.notes), label: "Notes"),
+          BottomNavigationBarItem(icon: Icon(ConstantIcons.addNote), label: "Add Note"),
+          BottomNavigationBarItem(icon: Icon(ConstantIcons.notifications), label: "Notifications"),
+          BottomNavigationBarItem(icon: Icon(ConstantIcons.profile), label: "Profile"),
         ],
       ),
     );
