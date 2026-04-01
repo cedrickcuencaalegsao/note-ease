@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './shared//components//layout//layout.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,11 +11,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('app ni dave'),
-        ),
-      ),
+      title: "Note Ease",
+      debugShowCheckedModeBanner: false,
+      home: AppLayout(),
     );
   }
 }
