@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import './shared//components//layout//layout.dart';
+import 'app_theme.dart';
+import './pages/splash_screen/splash_screen.dart';
 
-void main() {
-  runApp(const MainApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const NoteEaseApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class NoteEaseApp extends StatelessWidget {
+  const NoteEaseApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: "Note Ease",
+    return MaterialApp(
+      title: 'NoteEase',
       debugShowCheckedModeBanner: false,
-      home: AppLayout(),
+      theme: AppTheme.theme,
+      home: const SplashScreen(),
     );
   }
 }
