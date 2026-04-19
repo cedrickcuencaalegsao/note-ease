@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../shared/services/auth_service.dart';
 import '../../app_theme.dart';
@@ -33,10 +34,14 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(error), backgroundColor: AppTheme.danger),
       );
     } else {
+      final user = FirebaseAuth.instance.currentUser!;
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) => DashboardScreen(username: _usernameCtrl.text.trim()),
+          builder: (_) => DashboardScreen(
+            username: _usernameCtrl.text.trim(),
+            uid: user.uid,
+          ),
         ),
         (_) => false,
       );
@@ -146,23 +151,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       "Don't have an account? Register",
                       style: TextStyle(color: AppTheme.primary),
-                    ),
-                  ),
-                ),
-                // after the Register TextButton
-                const SizedBox(height: 8),
-                Center(
-                  child: TextButton(
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            const DashboardScreen(username: 'Guest'),
-                      ),
-                    ),
-                    child: const Text(
-                      'Skip for now',
-                      style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
                     ),
                   ),
                 ),

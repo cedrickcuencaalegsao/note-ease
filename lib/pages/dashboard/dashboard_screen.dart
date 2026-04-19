@@ -1,4 +1,4 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/note.dart';
 import '../../shared/services/auth_service.dart';
@@ -9,7 +9,8 @@ import '../note_editor/note_editor_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String username;
-  const DashboardScreen({super.key, required this.username});
+  final String uid;
+  const DashboardScreen({super.key, required this.username, required this.uid});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -29,7 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _loadNotes() async {
     setState(() => _loading = true);
-    final notes = await _noteService.getNotes(widget.username);
+    final notes = await _noteService.getNotes(widget.uid);
     setState(() {
       _notes = notes;
       _loading = false;
@@ -50,24 +51,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16)),
-        title: const Text('Delete Note',
-            style: TextStyle(fontWeight: FontWeight.w700)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Delete Note',
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
         content: Text(
-            'Are you sure you want to delete "${note.title}"? This cannot be undone.'),
+          'Are you sure you want to delete "${note.title}"? This cannot be undone.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel',
-                style: TextStyle(color: AppTheme.textMuted)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppTheme.textMuted),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.danger,
               minimumSize: Size.zero,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Delete'),
@@ -76,13 +80,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
     if (confirmed == true) {
-      await _noteService.deleteNote(widget.username, note.id);
+      await _noteService.deleteNote(widget.uid, note.id);
       _loadNotes();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Note deleted.'),
-            backgroundColor: AppTheme.danger),
+          content: Text('Note deleted.'),
+          backgroundColor: AppTheme.danger,
+        ),
       );
     }
   }
@@ -91,10 +96,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => NoteEditorScreen(
-          username: widget.username,
-          existingNote: note,
-        ),
+        builder: (_) =>
+            NoteEditorScreen(uid: widget.uid, existingNote: note),
       ),
     );
     _loadNotes();
@@ -109,8 +112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const Text('NoteEase'),
             Text(
               'Hi, ${widget.username}',
-              style: const TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w400),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
             ),
           ],
         ),
@@ -132,8 +134,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _notes.isEmpty
-              ? _buildEmpty()
-              : _buildNoteList(),
+          ? _buildEmpty()
+          : _buildNoteList(),
     );
   }
 
@@ -142,18 +144,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.note_outlined,
-              size: 72,
-              color: AppTheme.primary.withOpacity(0.3)),
+          Icon(
+            Icons.note_outlined,
+            size: 72,
+            color: AppTheme.primary.withOpacity(0.3),
+          ),
           const SizedBox(height: 16),
-          const Text('No notes yet',
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textDark)),
+          const Text(
+            'No notes yet',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.textDark,
+            ),
+          ),
           const SizedBox(height: 8),
-          const Text('Tap "+ New Note" to create your first note.',
-              style: TextStyle(color: AppTheme.textMuted)),
+          const Text(
+            'Tap "+ New Note" to create your first note.',
+            style: TextStyle(color: AppTheme.textMuted),
+          ),
         ],
       ),
     );
@@ -204,8 +213,10 @@ class _NoteCard extends StatelessWidget {
                   color: AppTheme.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.sticky_note_2_outlined,
-                    color: AppTheme.primary),
+                child: const Icon(
+                  Icons.sticky_note_2_outlined,
+                  color: AppTheme.primary,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -215,34 +226,36 @@ class _NoteCard extends StatelessWidget {
                     Text(
                       note.title.isEmpty ? '(Untitled)' : note.title,
                       style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: AppTheme.textDark),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: AppTheme.textDark,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      note.content.isEmpty
-                          ? 'No content'
-                          : note.content,
+                      note.content.isEmpty ? 'No content' : note.content,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          color: AppTheme.textMuted, fontSize: 13),
+                        color: AppTheme.textMuted,
+                        fontSize: 13,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       fmt.format(note.updatedAt),
                       style: const TextStyle(
-                          color: AppTheme.primaryLight, fontSize: 11),
+                        color: AppTheme.primaryLight,
+                        fontSize: 11,
+                      ),
                     ),
                   ],
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline,
-                    color: AppTheme.danger),
+                icon: const Icon(Icons.delete_outline, color: AppTheme.danger),
                 onPressed: onDelete,
                 tooltip: 'Delete',
               ),

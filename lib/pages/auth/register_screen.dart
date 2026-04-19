@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../shared/services/auth_service.dart';
 import '../../app_theme.dart';
@@ -43,10 +44,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _loading = false;
       });
       if (!mounted) return;
+      final user = FirebaseAuth.instance.currentUser!;
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) => DashboardScreen(username: _usernameCtrl.text.trim()),
+          builder: (_) => DashboardScreen(
+            username: _usernameCtrl.text.trim(),
+            uid: user.uid,
+          ),
         ),
         (_) => false,
       );

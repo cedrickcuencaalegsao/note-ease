@@ -5,12 +5,12 @@ import '../../shared/services/note_service.dart';
 import '../../app_theme.dart';
 
 class NoteEditorScreen extends StatefulWidget {
-  final String username;
+  final String uid;
   final Note? existingNote;
 
   const NoteEditorScreen({
     super.key,
-    required this.username,
+    required this.uid,
     this.existingNote,
   });
 
@@ -62,7 +62,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
             updatedAt: now,
           );
 
-    await _noteService.saveNote(widget.username, note);
+    await _noteService.saveNote(widget.uid, note);
     setState(() => _saving = false);
     if (!mounted) return;
     Navigator.pop(context);

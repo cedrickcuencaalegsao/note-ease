@@ -1,39 +1,35 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:money_ease/models/note.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
+import '../../models/note.dart';
 
 class NoteService {
-  String _keyFor(String username) => 'notes_$username';
+  final _db = FirebaseDatabase.instance.ref();
 
-  Future<List<Note>> getNotes(String username) async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_keyFor(username));
-    if (raw == null) return [];
-    final List<dynamic> list = jsonDecode(raw);
-    return list.map((e) => Note.fromJson(e)).toList()
-      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-  }
+  DatabaseReference _noteRef(String uid) => _db.child('notes/$uid');
 
-  Future<void> saveNote(String username, Note note) async {
-    final prefs = await SharedPreferences.getInstance();
-    final notes = await getNotes(username);
-    final index = notes.indexWhere((n) => n.id == note.id);
-    if (index >= 0) {
-      notes[index] = note;
-    } else {
-      notes.add(note);
+  Future<List<Note>> getNotes(String uid) async {
+    try {
+      final snapshot = await _noteRef(uid).get();
+      if (!snapshot.exists) return [];
+
+      final data = Map<String, dynamic>.from(snapshot.value as Map);
+      final notes = data.entries.map((e) {
+        return Note.fromJson(Map<String, dynamic>.from(e.value as Map));
+      }).toList();
+
+      notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return notes;
+    } catch (e) {
+      debugPrint('Errors: $e');
+      return [];
     }
-    await prefs.setString(
-        _keyFor(username),
-        jsonEncode(notes.map((n) => n.toJson()).toList()));
   }
 
-  Future<void> deleteNote(String username, String noteId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final notes = await getNotes(username);
-    notes.removeWhere((n) => n.id == noteId);
-    await prefs.setString(
-        _keyFor(username),
-        jsonEncode(notes.map((n) => n.toJson()).toList()));
+  Future<void> saveNote(String uid, Note note) async {
+    await _noteRef(uid).child(note.id).set(note.toJson());
+  }
+
+  Future<void> deleteNote(String uid, String noteId) async{
+    await _noteRef(uid).child(noteId).remove();
   }
 }
