@@ -33,11 +33,12 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(error), backgroundColor: AppTheme.danger),
       );
     } else {
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (_) => DashboardScreen(username: _usernameCtrl.text.trim()),
         ),
+        (_) => false,
       );
     }
   }

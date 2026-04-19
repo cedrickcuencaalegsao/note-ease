@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "630522184803",
+    "firebase_url": "https://note-ease-ec2ab-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "note-ease-ec2ab",
+    "storage_bucket": "note-ease-ec2ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630522184803:android:c92a663e50dd63ab736456",
+        "android_client_info": {
+          "package_name": "com.example.money_ease"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCir6sjoSM9n48nN18DIpeDdA-kcCoJTXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

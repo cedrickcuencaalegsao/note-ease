@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import '../../shared/services/auth_service.dart';
 import '../../app_theme.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../auth/login_screen.dart';
@@ -20,16 +21,27 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkAuth() async {
     await Future.delayed(const Duration(milliseconds: 1200));
-    final user = await AuthService().getLoggedInUser();
     if (!mounted) return;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => user != null
-            ? DashboardScreen(username: user)
-            : const LoginScreen(),
-      ),
-    );
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final snapshot = await FirebaseDatabase.instance
+          .ref('users/${user.uid}/username')
+          .get();
+
+      final username = snapshot.value as String? ?? 'User';
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => DashboardScreen(username: username)),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    }
   }
 
   @override
@@ -47,8 +59,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: Colors.white.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: const Icon(Icons.note_alt_rounded,
-                  color: Colors.white, size: 52),
+              child: const Icon(
+                Icons.note_alt_rounded,
+                color: Colors.white,
+                size: 52,
+              ),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -67,7 +82,9 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 40),
             const CircularProgressIndicator(
-                color: Colors.white, strokeWidth: 2),
+              color: Colors.white,
+              strokeWidth: 2,
+            ),
           ],
         ),
       ),

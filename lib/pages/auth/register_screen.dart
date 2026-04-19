@@ -21,26 +21,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _loading = true);
+    setState(() {
+      _loading = true;
+    });
+
     final error = await _authService.register(
       _usernameCtrl.text.trim(),
       _passwordCtrl.text,
     );
+
     if (error != null) {
-      setState(() => _loading = false);
+      setState(() {
+        _loading = false;
+      });
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error), backgroundColor: AppTheme.danger));
+        SnackBar(content: Text(error), backgroundColor: AppTheme.danger),
+      );
     } else {
-      await _authService.login(
-          _usernameCtrl.text.trim(), _passwordCtrl.text);
-      setState(() => _loading = false);
+      setState(() {
+        _loading = false;
+      });
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) =>
-              DashboardScreen(username: _usernameCtrl.text.trim()),
+          builder: (_) => DashboardScreen(username: _usernameCtrl.text.trim()),
         ),
         (_) => false,
       );
@@ -59,20 +65,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Join NoteEase',
-                    style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        color: AppTheme.textDark)),
+                const Text(
+                  'Join NoteEase',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                const Text('Create your account to start taking notes.',
-                    style:
-                        TextStyle(color: AppTheme.textMuted, fontSize: 14)),
+                const Text(
+                  'Create your account to start taking notes.',
+                  style: TextStyle(color: AppTheme.textMuted, fontSize: 14),
+                ),
                 const SizedBox(height: 32),
-                const Text('Username',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textDark)),
+                const Text(
+                  'Username',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textDark,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _usernameCtrl,
@@ -87,10 +100,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                const Text('Password',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textDark)),
+                const Text(
+                  'Password',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textDark,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _passwordCtrl,
@@ -99,11 +115,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     hintText: 'Create a password',
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscure
-                          ? Icons.visibility_off
-                          : Icons.visibility),
-                      onPressed: () =>
-                          setState(() => _obscure = !_obscure),
+                      icon: Icon(
+                        _obscure ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: () => setState(() => _obscure = !_obscure),
                     ),
                   ),
                   validator: (v) {
@@ -113,10 +128,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                const Text('Confirm Password',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textDark)),
+                const Text(
+                  'Confirm Password',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textDark,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _confirmCtrl,
